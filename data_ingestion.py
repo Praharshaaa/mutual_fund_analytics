@@ -1,29 +1,28 @@
-import requests
 import pandas as pd
+import numpy as np
 from pathlib import Path
 
 # Create folders
 Path("data/raw").mkdir(parents=True, exist_ok=True)
+Path("data/processed").mkdir(parents=True, exist_ok=True)
 
-# 10 scheme codes to fetch
-schemes = {
-    "SBI_Bluechip": 119551,
-    "ICICI_Bluechip": 120503,
-    "Nippon_LargeCap": 118632,
-    "Axis_Bluechip": 119092,
-    "Kotak_Bluechip": 120841,
-    "HDFC_Top100": 125497,
-    "Mirae_Largecap": 118989,
-    "Canara_Bluechip": 120716,
-    "DSP_Top100": 111359,
-    "Franklin_Bluechip": 100016
+path = r'C:\Users\PRAHARSHA\mutual_fund_analytics\data\raw\\'
+
+# Load all 10 official CSV datasets
+datasets = {
+    '01_fund_master': pd.read_csv(path + '01_fund_master.csv'),
+    '02_nav_history': pd.read_csv(path + '02_nav_history.csv'),
+    '03_aum_by_fund_house': pd.read_csv(path + '03_aum_by_fund_house.csv'),
+    '04_monthly_sip_inflows': pd.read_csv(path + '04_monthly_sip_inflows.csv'),
+    '05_category_inflows': pd.read_csv(path + '05_category_inflows.csv'),
+    '06_industry_folio_count': pd.read_csv(path + '06_industry_folio_count.csv'),
+    '07_scheme_performance': pd.read_csv(path + '07_scheme_performance.csv'),
+    '08_investor_transactions': pd.read_csv(path + '08_investor_transactions.csv'),
+    '09_portfolio_holdings': pd.read_csv(path + '09_portfolio_holdings.csv'),
+    '10_benchmark_indices': pd.read_csv(path + '10_benchmark_indices.csv'),
 }
 
-for name, code in schemes.items():
-    url = f"https://api.mfapi.in/mf/{code}"
-    response = requests.get(url)
-    data = response.json()
-    df = pd.DataFrame(data['data'])
-    df['scheme_name'] = data['meta']['scheme_name']
-    df.to_csv(f"data/raw/{name}.csv", index=False)
+for name, df in datasets.items():
     print(f"✅ {name}: {df.shape}")
+
+print("\n✅ All 10 datasets loaded successfully!")
